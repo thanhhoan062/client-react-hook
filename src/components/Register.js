@@ -23,7 +23,7 @@ const validEmail = (value) => {
     );
   }
 };
-const vusername = (value) => {
+const validUsername = (value) => {
   if (value.length < 3 || value.length > 20) {
     return (
       <div className="alert alert-danger" role="alert">
@@ -42,6 +42,16 @@ const vpassword = (value) => {
   }
 };
 
+const validName = (value) => {
+  if (value.length < 3 || value.length > 20) {
+    return (
+      <div className="alert alert-danger" role="alert">
+        The name must be between 3 and 20 characters.
+      </div>
+    );
+  }
+};
+
 const Register = () => {
   const form = useRef();
   const checkBtn = useRef();
@@ -50,10 +60,16 @@ const Register = () => {
   const [password, setPassword] = useState('');
   const [successful, setSuccessful] = useState(false);
   const [message, setMessage] = useState('');
+  const [name, setName] = useState('');
+
 
   const onChangeUsername = (e) => {
     const username = e.target.value;
     setUsername(username);
+  };
+  const onChangeName = (e) => {
+    const name = e.target.value;
+    setName(name);
   };
   const onChangeEmail = (e) => {
     const email = e.target.value;
@@ -69,7 +85,7 @@ const Register = () => {
     setSuccessful(false);
     form.current.validateAll();
     if (checkBtn.current.context._errors.length === 0) {
-      AuthService.register(username, email, password).then(
+      AuthService.register(name, username, email, password).then(
         (response) => {
           setMessage(response.data.message);
           setSuccessful(true);
@@ -107,7 +123,18 @@ const Register = () => {
                   name="username"
                   value={username}
                   onChange={onChangeUsername}
-                  validations={[required, vusername]}
+                  validations={[required, validUsername]}
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="name">Nick Name</label>
+                <Input
+                  type="text"
+                  className="form-control"
+                  name="name"
+                  value={name}
+                  onChange={onChangeName}
+                  validations={[required, validName]}
                 />
               </div>
               <div className="form-group">

@@ -1,4 +1,5 @@
 import axios from 'axios';
+import TokenService from "./token.service";
 
 const API_URL = 'http://localhost:5000/api/auth/';
 
@@ -12,18 +13,23 @@ const register = (name, username, email, password) => {
 };
 
 const login = (username, password) => {
-  return axios.post(API_URL + 'signin', {
+  return axios.post(API_URL + 'signin-refresh', {
     username,
     password,
+  }).then(response => {
+    if (response.data.accessToken) {
+      TokenService.setUser(response.data);
+    }
+    return response.data;
   });
 };
 
 const logout = () => {
-  localStorage.removeItem('user');
+  TokenService.removeUser();
 };
 
 const getCurrentUser = () => {
-  return JSON.parse(localStorage.getItem('user'));
+  return TokenService.getUser();
 };
 
 const AuthService = {
